@@ -1,65 +1,85 @@
-import Image from "next/image";
+import Link from "next/link";
+
+import { ProductGrid } from "@/components/product/product-grid";
+import { buttonVariants } from "@/components/ui/button";
+import { products } from "@/data/products";
+import { cn } from "@/lib/cn";
+
+const featuredProducts = products.filter((product) => product.isNew || product.isSale).slice(0, 4);
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <section className="relative overflow-hidden border-b border-slate-200 bg-slate-950 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.22),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(45,212,191,0.16),_transparent_30%)]" />
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">
+          <div className="max-w-3xl">
+            <p className="mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-amber-100">
+              Product discovery with App Router
+            </p>
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
+              A commerce search lab built around React architecture.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+              Using Next.js patterns: Server Components, URL-based filters, TypeScript domain models, and Tailwind UI.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/products" className={buttonVariants({ variant: "primary", size: "lg" })}>
+                Explore products
+              </Link>
+              <Link
+                href="/products?q=shirt&category=apparel&sort=price-asc"
+                className={buttonVariants({ variant: "secondary", size: "lg" })}
+              >
+                Try URL filters
+              </Link>
+            </div>
+          </div>
+          <div className="rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur">
+            <div className="rounded-[1.5rem] bg-stone-50 p-4 text-slate-950">
+              <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-4">
+                <div>
+                  <p className="text-sm font-medium text-slate-500">Live query</p>
+                  <p className="font-semibold">?q=shirt&category=apparel</p>
+                </div>
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                  Server filtered
+                </span>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {featuredProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/products/${product.slug}`}
+                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    <div className="mb-3 rounded-xl bg-gradient-to-br from-amber-100 via-stone-100 to-teal-100 p-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      {product.image}
+                    </div>
+                    <p className="text-sm text-slate-500">{product.brand}</p>
+                    <p className="font-semibold">{product.name}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <h2 className="text-3xl font-semibold tracking-tight">Featured catalog sample</h2>
+            <p className="mt-2 max-w-2xl text-slate-600">
+              The same product cards are used on the listing route, backed by local typed data.
+            </p>
+          </div>
+          <Link href="/products" className={cn(buttonVariants({ variant: "ghost" }), "self-start sm:self-auto")}>
+            View all products
+          </Link>
         </div>
-      </main>
-    </div>
+        <ProductGrid products={featuredProducts} />
+      </section>
+    </main>
   );
 }
