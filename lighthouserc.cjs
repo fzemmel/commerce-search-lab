@@ -25,7 +25,7 @@ module.exports = {
     },
     upload: {
       target: "filesystem",
-      outputDir: ".lighthouseci",
+      outputDir: "lighthouse-reports",
     },
   },
 };
