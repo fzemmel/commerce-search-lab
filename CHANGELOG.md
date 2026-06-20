@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### Added
+
+- Lighthouse CI checks for key routes in the GitHub Actions pipeline, including report artifact upload.
+
 ## 0.1.0 - 2026-06-20
 
 ### Added
