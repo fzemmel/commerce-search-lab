@@ -12,9 +12,9 @@ const sortOptions = Object.entries(sortLabels) as Array<[ProductSort, string]>;
 
 export function SortSelect({ value, onChange }: SortSelectProps) {
   return (
-    <label className="block">
+    <label className="block" htmlFor="product-sort">
       <span className="mb-2 block text-sm font-semibold text-slate-700">Sort by</span>
-      <Select value={value} onChange={onChange}>
+      <Select id="product-sort" name="sort" value={value} onChange={onChange}>
         {sortOptions.map(([optionValue, label]) => (
           <option key={optionValue} value={optionValue}>
             {label}

@@ -16,9 +16,9 @@ type CategorySelectProps = {
 
 export function CategorySelect({ value, options, onChange }: CategorySelectProps) {
   return (
-    <label className="block">
+    <label className="block" htmlFor="product-category">
       <span className="mb-2 block text-sm font-semibold text-slate-700">Category</span>
-      <Select value={value} onChange={onChange}>
+      <Select id="product-category" name="category" value={value} onChange={onChange}>
         <option value="all">All categories</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>

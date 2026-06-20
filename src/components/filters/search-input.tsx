@@ -9,9 +9,16 @@ type SearchInputProps = {
 
 export function SearchInput({ value, onChange }: SearchInputProps) {
   return (
-    <label className="block">
+    <label className="block" htmlFor="product-search">
       <span className="mb-2 block text-sm font-semibold text-slate-700">Search</span>
-      <Input value={value} onChange={onChange} placeholder="Search name, brand, or description" type="search" />
+      <Input
+        id="product-search"
+        name="q"
+        value={value}
+        onChange={onChange}
+        placeholder="Search name, brand, or description"
+        type="search"
+      />
     </label>
   );
 }
