@@ -67,6 +67,12 @@ Run linting:
 pnpm lint
 ```
 
+Run unit tests:
+
+```bash
+pnpm test
+```
+
 The app runs at `http://localhost:3000` by default.
 
 If pnpm is not installed locally, install it first with your preferred Node package manager.
@@ -84,7 +90,7 @@ If pnpm is not installed locally, install it first with your preferred Node pack
 - Add multi-select facets such as brand, color, material, and sale status
 - Add product image assets or a small image pipeline
 - Add Playwright smoke tests for listing and detail routes
-- Add unit tests for `product-query.ts`
+- Add component tests for product cards and filter controls
 - Add route-level metadata and structured data for product details
 - Move mock data behind a small API layer or headless commerce adapter
 - Add compare, wishlist, or recently viewed interactions

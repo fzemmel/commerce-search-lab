@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Lighthouse CI checks for key routes in the GitHub Actions pipeline, including report artifact upload.
+- Vitest unit tests for product query parsing, filtering, sorting, price formatting, and class name utilities.
 
 ## 0.1.0 - 2026-06-20
 
