@@ -46,7 +46,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
       <section className="mt-8 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-stone-100 via-amber-50 to-teal-50 p-6 shadow-sm">
-          <div className="flex min-h-[420px] items-end justify-center rounded-[1.5rem] border border-white/70 bg-white/55 p-8 text-center text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+          <div
+            aria-hidden="true"
+            className="flex min-h-[420px] items-end justify-center rounded-[1.5rem] border border-white/70 bg-white/55 p-8 text-center text-sm font-semibold uppercase tracking-[0.28em] text-slate-500"
+          >
             {product.image}
           </div>
         </div>
@@ -60,7 +63,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <ProductPrice price={product.price} originalPrice={product.originalPrice} />
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
+            <span
+              className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700"
+              aria-label={`Rating: ${product.rating.toFixed(1)} out of 5`}
+            >
               Rating {product.rating.toFixed(1)} / 5
             </span>
           </div>

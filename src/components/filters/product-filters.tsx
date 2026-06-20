@@ -64,7 +64,11 @@ export function ProductFilters({ query, categoryOptions }: ProductFiltersProps) 
           Reset
         </Button>
       </div>
-      {isPending ? <p className="mt-3 text-sm text-slate-500">Updating results...</p> : null}
+      {isPending ? (
+        <p className="mt-3 text-sm text-slate-500" aria-live="polite">
+          Updating results...
+        </p>
+      ) : null}
     </div>
   );
 }
