@@ -1,6 +1,6 @@
 # Commerce Search Lab
 
-[![CI](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml)
+[![CI](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml?query=branch%3Amain)
 
 Commerce Search Lab is a Next.js product discovery app. Use React and Next.js App Router in a commerce context: product listing, faceted search, URL-driven state, server-rendered routes, typed mock data, and reusable UI components.
 
