@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.3.0 - 2026-06-26
+
+### Added
+
+- Docker-based Hetzner deployment setup with a Next.js standalone production image.
+- Production Compose configuration for the existing Docker Caddy network.
+- GitHub Actions deployment job that builds and pushes GHCR images, then deploys to Hetzner over SSH.
+- Deployment documentation for required GitHub Secrets, Caddy upstream, and server setup.
+
+## 0.2.0 - 2026-06-26
+
 ### Added
 
 - Lighthouse CI checks for key routes in the GitHub Actions pipeline, including report artifact upload.
