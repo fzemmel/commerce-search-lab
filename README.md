@@ -2,7 +2,8 @@
 
 [![CI](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml?query=branch%3Amain)
 
-Commerce Search Lab is a Next.js product discovery app. Use React and Next.js App Router in a commerce context: product listing, faceted search, URL-driven state, server-rendered routes, typed mock data, and reusable UI components.
+Commerce Search Lab is a Next.js product discovery app. Use React and Next.js App Router in a commerce context: 
+product listing, faceted search, URL-driven state, server-rendered routes, typed mock data, and reusable UI components.
 
 ## Tech Stack
 
@@ -41,9 +42,12 @@ Commerce Search Lab is a Next.js product discovery app. Use React and Next.js Ap
 
 ## Server Components vs. Client Components
 
-Pages are Server Components by default. The product listing reads `searchParams`, parses the query, filters the local catalog, and renders the product grid on the server.
+Pages are Server Components by default. The product listing reads `searchParams`, parses the query, filters 
+the local catalog, and renders the product grid on the server.
 
-Client Components are only used where browser interaction is required. `ProductFilters` uses Next navigation hooks to update the URL when the user searches, changes category, changes sorting, or resets filters. Once the URL changes, the server page receives new `searchParams` and renders the updated listing.
+Client Components are only used where browser interaction is required. `ProductFilters` uses Next navigation 
+hooks to update the URL when the user searches, changes category, changes sorting, or resets filters. 
+Once the URL changes, the server page receives new `searchParams` and renders the updated listing.
 
 This keeps the data-reading path simple and server-first while still providing an interactive search and filter experience.
 
@@ -91,9 +95,12 @@ If pnpm is not installed locally, install it first with your preferred Node pack
 
 ## Production Deployment
 
-The app is deployed as a Dockerized Next.js standalone server. `next.config.ts` enables `output: "standalone"`, and the production image runs the generated `server.js` on port `3000`.
+The app is deployed as a Dockerized Next.js standalone server. `next.config.ts` enables `output: "standalone"`, 
+and the production image runs the generated `server.js` on port `3000`.
 
-The deployment target is a Hetzner server with Docker, Docker Compose, and Caddy already configured. Caddy terminates HTTPS, applies Basic Auth, and reverse proxies traffic to the app container on the local loopback interface.
+The deployment target is a Hetzner server with Docker, Docker Compose, and Caddy already configured. 
+Caddy runs in Docker, terminates HTTPS, applies Basic Auth, and reverse proxies traffic to the app container 
+through the shared Docker network `portfolio-lab_default`.
 
 Expected Caddy upstream:
 
@@ -103,17 +110,18 @@ lab.zemmel.es {
         felix <hashed-password>
     }
 
-    reverse_proxy 127.0.0.1:3000
+    reverse_proxy commerce-search-lab:3000
 }
 ```
 
-The production Compose file is `docker-compose.prod.yml`. It starts the `commerce-search-lab` service from the GitHub Container Registry image:
+The production Compose file is `docker-compose.prod.yml`. It starts the `commerce-search-lab` service 
+from the GitHub Container Registry image:
 
 ```txt
 ghcr.io/fzemmel/commerce-search-lab:latest
 ```
 
-The app publishes port `3000` on `127.0.0.1` only, so it is reachable by host-level Caddy but not exposed publicly. The service is also attached to the external Docker network `portfolio-lab_default` for compatibility with the existing server setup.
+No host port is exposed by the app container. Caddy reaches it by service name on the external Docker network.
 
 ## Deployment Pipeline
 
