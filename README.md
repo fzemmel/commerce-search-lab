@@ -2,7 +2,8 @@
 
 [![CI](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml?query=branch%3Amain)
 
-Commerce Search Lab is a Next.js product discovery app. Use React and Next.js App Router in a commerce context: product listing, faceted search, URL-driven state, server-rendered routes, typed mock data, and reusable UI components.
+Commerce Search Lab is a Next.js product discovery app. Use React and Next.js App Router in a commerce context: 
+product listing, faceted search, URL-driven state, server-rendered routes, typed mock data, and reusable UI components.
 
 ## Tech Stack
 
@@ -41,9 +42,12 @@ Commerce Search Lab is a Next.js product discovery app. Use React and Next.js Ap
 
 ## Server Components vs. Client Components
 
-Pages are Server Components by default. The product listing reads `searchParams`, parses the query, filters the local catalog, and renders the product grid on the server.
+Pages are Server Components by default. The product listing reads `searchParams`, parses the query, filters 
+the local catalog, and renders the product grid on the server.
 
-Client Components are only used where browser interaction is required. `ProductFilters` uses Next navigation hooks to update the URL when the user searches, changes category, changes sorting, or resets filters. Once the URL changes, the server page receives new `searchParams` and renders the updated listing.
+Client Components are only used where browser interaction is required. `ProductFilters` uses Next navigation 
+hooks to update the URL when the user searches, changes category, changes sorting, or resets filters. 
+Once the URL changes, the server page receives new `searchParams` and renders the updated listing.
 
 This keeps the data-reading path simple and server-first while still providing an interactive search and filter experience.
 
@@ -73,9 +77,78 @@ Run unit tests:
 pnpm test
 ```
 
+Build the production app:
+
+```bash
+pnpm build
+```
+
+Start the production server after a build:
+
+```bash
+pnpm start
+```
+
 The app runs at `http://localhost:3000` by default.
 
 If pnpm is not installed locally, install it first with your preferred Node package manager.
+
+## Production Deployment
+
+The app is deployed as a Dockerized Next.js standalone server. `next.config.ts` enables `output: "standalone"`, 
+and the production image runs the generated `server.js` on port `3000`.
+
+The deployment target is a Hetzner server with Docker, Docker Compose, and Caddy already configured. 
+Caddy runs in Docker, terminates HTTPS, applies Basic Auth, and reverse proxies traffic to the app container 
+through the shared Docker network `portfolio-lab_default`.
+
+Expected Caddy upstream:
+
+```caddyfile
+lab.zemmel.es {
+    basic_auth {
+        felix <hashed-password>
+    }
+
+    reverse_proxy commerce-search-lab:3000
+}
+```
+
+The production Compose file is `docker-compose.prod.yml`. It starts the `commerce-search-lab` service 
+from the GitHub Container Registry image:
+
+```txt
+ghcr.io/fzemmel/commerce-search-lab:latest
+```
+
+No host port is exposed by the app container. Caddy reaches it by service name on the external Docker network.
+
+## Deployment Pipeline
+
+GitHub Actions runs quality checks for pushes and pull requests targeting `main`:
+
+```bash
+pnpm lint
+pnpm test
+pnpm build
+pnpm lhci
+```
+
+On pushes to `main`, the deployment job then:
+
+- Builds the Docker image.
+- Pushes `latest` and commit-SHA tags to GHCR.
+- Copies `docker-compose.prod.yml` to the Hetzner server.
+- Logs in to GHCR on the server with a read-only package token.
+- Pulls the latest image and restarts the Compose service.
+
+Required GitHub repository secrets:
+
+- `SSH_HOST`: Hetzner server hostname or IP.
+- `SSH_USER`: SSH user used for deployment.
+- `SSH_PRIVATE_KEY`: Private SSH key for the deployment user.
+- `DEPLOY_PATH`: Server path for the app Compose file, for example `/opt/portfolio-lab/apps/commerce-search-lab`.
+- `GHCR_READ_TOKEN`: GitHub token with `read:packages` permission for pulling the private GHCR image.
 
 ## Useful Routes
 
