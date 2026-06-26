@@ -1,0 +1,18 @@
+services:
+  commerce-search-lab:
+    image: ghcr.io/fzemmel/commerce-search-lab:latest
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - portfolio-lab
+
+networks:
+  portfolio-lab:
+    external: true
+    name: portfolio-lab_default

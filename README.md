@@ -73,9 +73,74 @@ Run unit tests:
 pnpm test
 ```
 
+Build the production app:
+
+```bash
+pnpm build
+```
+
+Start the production server after a build:
+
+```bash
+pnpm start
+```
+
 The app runs at `http://localhost:3000` by default.
 
 If pnpm is not installed locally, install it first with your preferred Node package manager.
+
+## Production Deployment
+
+The app is deployed as a Dockerized Next.js standalone server. `next.config.ts` enables `output: "standalone"`, and the production image runs the generated `server.js` on port `3000`.
+
+The deployment target is a Hetzner server with Docker, Docker Compose, and Caddy already configured. Caddy terminates HTTPS, applies Basic Auth, and reverse proxies traffic to the app container on the local loopback interface.
+
+Expected Caddy upstream:
+
+```caddyfile
+lab.zemmel.es {
+    basic_auth {
+        felix <hashed-password>
+    }
+
+    reverse_proxy 127.0.0.1:3000
+}
+```
+
+The production Compose file is `docker-compose.prod.yml`. It starts the `commerce-search-lab` service from the GitHub Container Registry image:
+
+```txt
+ghcr.io/fzemmel/commerce-search-lab:latest
+```
+
+The app publishes port `3000` on `127.0.0.1` only, so it is reachable by host-level Caddy but not exposed publicly. The service is also attached to the external Docker network `portfolio-lab_default` for compatibility with the existing server setup.
+
+## Deployment Pipeline
+
+GitHub Actions runs quality checks for pushes and pull requests targeting `main`:
+
+```bash
+pnpm lint
+pnpm test
+pnpm build
+pnpm lhci
+```
+
+On pushes to `main`, the deployment job then:
+
+- Builds the Docker image.
+- Pushes `latest` and commit-SHA tags to GHCR.
+- Copies `docker-compose.prod.yml` to the Hetzner server.
+- Logs in to GHCR on the server with a read-only package token.
+- Pulls the latest image and restarts the Compose service.
+
+Required GitHub repository secrets:
+
+- `SSH_HOST`: Hetzner server hostname or IP.
+- `SSH_USER`: SSH user used for deployment.
+- `SSH_PRIVATE_KEY`: Private SSH key for the deployment user.
+- `DEPLOY_PATH`: Server path for the app Compose file, for example `/opt/portfolio-lab/apps/commerce-search-lab`.
+- `GHCR_READ_TOKEN`: GitHub token with `read:packages` permission for pulling the private GHCR image.
 
 ## Useful Routes
 
