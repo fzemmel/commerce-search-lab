@@ -2,8 +2,7 @@
 
 [![CI](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fzemmel/commerce-search-lab/actions/workflows/ci.yml?query=branch%3Amain)
 
-Commerce Search Lab is a Next.js product discovery app. Use React and Next.js App Router in a commerce context: 
-product listing, faceted search, URL-driven state, server-rendered routes, typed mock data, and reusable UI components.
+Commerce Search Lab is a Next.js product discovery app. Use React and Next.js App Router in a commerce context: product listing, faceted search, URL-driven state, server-rendered routes, external product data, and reusable UI components.
 
 ## Tech Stack
 
@@ -12,7 +11,7 @@ product listing, faceted search, URL-driven state, server-rendered routes, typed
 - TypeScript
 - Tailwind CSS 4
 - ESLint
-- Local mock product data
+- DummyJSON product API with local fallback data
 - `src/` directory and `@/*` import alias
 
 ## Features
@@ -20,21 +19,22 @@ product listing, faceted search, URL-driven state, server-rendered routes, typed
 - Landing page at `/`
 - Product listing at `/products`
 - Product detail pages at `/products/[slug]`
-- 16 typed mock products across apparel, footwear, accessories, and equipment
+- External product catalog from DummyJSON with local mock products as a fallback
+- Real product imagery rendered with `next/image`
 - Product cards with brand, category, price, sale price, rating, and badges
 - Search across product name, brand, and description
-- Category filter
+- Dynamic category filter based on the loaded catalog
 - Sorting by name, price ascending, price descending, and rating descending
-- URL-synchronized query state such as `/products?q=shirt&category=apparel&sort=price-asc`
+- URL-synchronized query state such as `/products?q=mascara&category=beauty&sort=price-asc`
 - Empty state for searches without matches
 - Loading, error, and not-found route structure
 - Responsive Tailwind layout
 
 ## Architecture Decisions
 
-- Product data lives in `src/data/products.ts` for version 1. There is no backend or database yet.
+- Product data is loaded from DummyJSON in `src/lib/products-api.ts` with ISR caching and a local fallback catalog in `src/data/products.ts`.
 - Product domain types live in `src/types/product.ts`.
-- Filtering, sorting, query parsing, category labels, and product lookup live in `src/lib/product-query.ts`.
+- Filtering, sorting, query parsing, dynamic category labels, and product lookup live in `src/lib/product-query.ts`.
 - Reusable product UI is grouped under `src/components/product`.
 - Interactive listing controls are grouped under `src/components/filters`.
 - Generic primitives such as `Button`, `Badge`, `Input`, and `Select` are grouped under `src/components/ui`.
@@ -42,8 +42,15 @@ product listing, faceted search, URL-driven state, server-rendered routes, typed
 
 ## Server Components vs. Client Components
 
-Pages are Server Components by default. The product listing reads `searchParams`, parses the query, filters 
-the local catalog, and renders the product grid on the server.
+Pages are Server Components by default. The product listing reads `searchParams`, loads the product catalog on the server, parses the query, filters the catalog, and renders the product grid on the server.
+
+The external catalog is fetched with ISR so product data is cached and revalidated periodically instead of being requested on every page view:
+
+```ts
+fetch("https://dummyjson.com/products?limit=200", {
+  next: { revalidate: 3600 },
+});
+```
 
 Client Components are only used where browser interaction is required. `ProductFilters` uses Next navigation 
 hooks to update the URL when the user searches, changes category, changes sorting, or resets filters. 
@@ -154,16 +161,15 @@ Required GitHub repository secrets:
 
 - `/`
 - `/products`
-- `/products?q=shirt&category=apparel&sort=price-asc`
-- `/products/atlas-organic-cotton-tee`
+- `/products?q=mascara&category=beauty&sort=price-asc`
+- `/products/essence-mascara-lash-princess-1`
 
 ## Possible Version 2 Improvements
 
 - Add pagination or infinite loading
 - Add multi-select facets such as brand, color, material, and sale status
-- Add product image assets or a small image pipeline
 - Add Playwright smoke tests for listing and detail routes
 - Add component tests for product cards and filter controls
 - Add route-level metadata and structured data for product details
-- Move mock data behind a small API layer or headless commerce adapter
+- Move from the demo product API to a dedicated headless commerce adapter
 - Add compare, wishlist, or recently viewed interactions

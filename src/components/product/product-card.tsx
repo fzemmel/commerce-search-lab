@@ -1,8 +1,9 @@
 import Link from "next/link";
 
 import { ProductBadges } from "@/components/product/product-badges";
+import { ProductImage } from "@/components/product/product-image";
 import { ProductPrice } from "@/components/product/product-price";
-import { categoryLabels } from "@/lib/product-query";
+import { formatCategoryLabel } from "@/lib/product-query";
 import type { Product } from "@/types/product";
 
 type ProductCardProps = {
@@ -21,17 +22,12 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="absolute left-5 top-5">
             <ProductBadges isNew={product.isNew} isSale={product.isSale} />
           </div>
-          <div
-            aria-hidden="true"
-            className="flex h-40 items-end justify-center rounded-2xl border border-white/70 bg-white/50 p-6 text-center text-xs font-semibold uppercase tracking-[0.22em] text-slate-500"
-          >
-            {product.image}
-          </div>
+          <ProductImage product={product} className="h-40" sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw" />
         </div>
         <div className="flex flex-1 flex-col p-5">
           <div className="mb-3 flex items-center justify-between gap-3 text-sm text-slate-500">
             <span>{product.brand}</span>
-            <span>{categoryLabels[product.category]}</span>
+            <span>{formatCategoryLabel(product.category)}</span>
           </div>
           <h2 className="text-lg font-semibold leading-6 text-slate-950 group-hover:text-amber-800">{product.name}</h2>
           <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600">{product.description}</p>

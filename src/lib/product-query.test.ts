@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  formatCategoryLabel,
   getCategoryOptions,
   getProductBySlug,
   parseProductQuery,
@@ -60,19 +61,23 @@ describe("parseProductQuery", () => {
   });
 
   it("normalizes valid query, category, and sort values", () => {
-    expect(parseProductQuery({ q: "  shirt  ", category: "apparel", sort: "price-asc" })).toEqual({
+    expect(parseProductQuery({ q: "  shirt  ", category: "apparel", sort: "price-asc" }, ["apparel"])).toEqual({
       q: "shirt",
       category: "apparel",
       sort: "price-asc",
     });
   });
 
-  it("falls back for invalid category and sort values", () => {
-    expect(parseProductQuery({ category: "invalid", sort: "unknown" })).toEqual(defaultQuery);
+  it("falls back for invalid category and sort values when valid categories are provided", () => {
+    expect(parseProductQuery({ category: "invalid", sort: "unknown" }, ["apparel"])).toEqual(defaultQuery);
+  });
+
+  it("keeps dynamic API categories when no category allow-list is provided", () => {
+    expect(parseProductQuery({ category: "home-decoration" })).toEqual({ ...defaultQuery, category: "home-decoration" });
   });
 
   it("uses the first value for repeated search params", () => {
-    expect(parseProductQuery({ q: ["shoe", "shirt"], category: ["footwear", "apparel"], sort: ["rating-desc"] })).toEqual({
+    expect(parseProductQuery({ q: ["shoe", "shirt"], category: ["footwear", "apparel"], sort: ["rating-desc"] }, ["footwear"])).toEqual({
       q: "shoe",
       category: "footwear",
       sort: "rating-desc",
@@ -127,21 +132,27 @@ describe("queryProducts", () => {
 
 describe("getProductBySlug", () => {
   it("returns a product for a known slug", () => {
-    expect(getProductBySlug("atlas-organic-cotton-tee")?.name).toBe("Atlas Organic Cotton Tee");
+    expect(getProductBySlug("alpha-shirt", catalog)?.name).toBe("Alpha Shirt");
   });
 
   it("returns undefined for an unknown slug", () => {
-    expect(getProductBySlug("does-not-exist")).toBeUndefined();
+    expect(getProductBySlug("does-not-exist", catalog)).toBeUndefined();
   });
 });
 
 describe("getCategoryOptions", () => {
-  it("returns the available category options", () => {
-    expect(getCategoryOptions()).toEqual([
+  it("returns the available category options from the catalog", () => {
+    expect(getCategoryOptions(catalog)).toEqual([
+      { value: "accessories", label: "Accessories" },
       { value: "apparel", label: "Apparel" },
       { value: "footwear", label: "Footwear" },
-      { value: "accessories", label: "Accessories" },
-      { value: "equipment", label: "Equipment" },
     ]);
+  });
+});
+
+describe("formatCategoryLabel", () => {
+  it("formats API category slugs as readable labels", () => {
+    expect(formatCategoryLabel("home-decoration")).toBe("Home Decoration");
+    expect(formatCategoryLabel("mens_shoes")).toBe("Mens Shoes");
   });
 });

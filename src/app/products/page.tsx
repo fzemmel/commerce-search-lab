@@ -5,14 +5,20 @@ import { ProductFilters } from "@/components/filters/product-filters";
 import { ProductGrid } from "@/components/product/product-grid";
 import { buttonVariants } from "@/components/ui/button";
 import { getCategoryOptions, parseProductQuery, queryProducts, type ProductSearchParams } from "@/lib/product-query";
+import { getProductCatalog } from "@/lib/products-api";
 
 type ProductsPageProps = {
   searchParams: Promise<ProductSearchParams>;
 };
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  const query = parseProductQuery(await searchParams);
-  const results = queryProducts(query);
+  const catalog = await getProductCatalog();
+  const categoryOptions = getCategoryOptions(catalog.products);
+  const query = parseProductQuery(
+    await searchParams,
+    categoryOptions.map((option) => option.value),
+  );
+  const results = queryProducts(query, catalog.products);
   const hasFilters = query.q.length > 0 || query.category !== "all" || query.sort !== "name-asc";
 
   return (
@@ -28,8 +34,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       </section>
 
       <Suspense fallback={<FilterSkeleton />}>
-        <ProductFilters query={query} categoryOptions={getCategoryOptions()} />
+        <ProductFilters query={query} categoryOptions={categoryOptions} />
       </Suspense>
+
+      {catalog.source === "fallback" ? (
+        <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950" role="status">
+          Using local fallback catalog because the external product API is currently unavailable.
+        </p>
+      ) : null}
 
       <div className="my-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <p className="text-sm font-medium text-slate-600">

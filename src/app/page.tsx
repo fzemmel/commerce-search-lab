@@ -1,13 +1,15 @@
 import Link from "next/link";
 
 import { ProductGrid } from "@/components/product/product-grid";
+import { ProductImage } from "@/components/product/product-image";
 import { buttonVariants } from "@/components/ui/button";
-import { products } from "@/data/products";
 import { cn } from "@/lib/cn";
+import { getProductCatalog } from "@/lib/products-api";
 
-const featuredProducts = products.filter((product) => product.isNew || product.isSale).slice(0, 4);
+export default async function Home() {
+  const catalog = await getProductCatalog();
+  const featuredProducts = catalog.products.filter((product) => product.isNew || product.isSale).slice(0, 4);
 
-export default function Home() {
   return (
     <main>
       <section className="relative overflow-hidden border-b border-slate-200 bg-slate-950 text-white">
@@ -28,7 +30,7 @@ export default function Home() {
                 Explore products
               </Link>
               <Link
-                href="/products?q=shirt&category=apparel&sort=price-asc"
+                href="/products?q=mascara&category=beauty&sort=price-asc"
                 className={buttonVariants({ variant: "secondary", size: "lg" })}
               >
                 Try URL filters
@@ -40,7 +42,7 @@ export default function Home() {
               <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
                   <p className="text-sm font-medium text-slate-500">Live query</p>
-                  <p className="font-semibold">?q=shirt&category=apparel</p>
+                  <p className="font-semibold">?q=mascara&category=beauty</p>
                 </div>
                 <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
                   Server filtered
@@ -53,9 +55,7 @@ export default function Home() {
                     href={`/products/${product.slug}`}
                     className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                   >
-                    <div className="mb-3 rounded-xl bg-gradient-to-br from-amber-100 via-stone-100 to-teal-100 p-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      {product.image}
-                    </div>
+                    <ProductImage product={product} className="mb-3 h-24 rounded-xl" sizes="(min-width: 640px) 220px, 50vw" />
                     <p className="text-sm text-slate-500">{product.brand}</p>
                     <p className="font-semibold">{product.name}</p>
                   </Link>
@@ -71,7 +71,7 @@ export default function Home() {
           <div>
             <h2 className="text-3xl font-semibold tracking-tight">Featured catalog sample</h2>
             <p className="mt-2 max-w-2xl text-slate-600">
-              The same product cards are used on the listing route, backed by local typed data.
+              The same product cards are used on the listing route, backed by the server-loaded product catalog.
             </p>
           </div>
           <Link href="/products" className={cn(buttonVariants({ variant: "ghost" }), "self-start sm:self-auto")}>
