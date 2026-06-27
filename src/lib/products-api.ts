@@ -92,9 +92,13 @@ function getFallbackCatalog(): ProductCatalogResult {
 
 export async function getProductCatalog(): Promise<ProductCatalogResult> {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5_000);
+
     const response = await fetch(PRODUCTS_API_URL, {
       next: { revalidate: PRODUCTS_REVALIDATE_SECONDS },
-    });
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeoutId));
 
     if (!response.ok) {
       return getFallbackCatalog();
