@@ -7,7 +7,6 @@ module.exports = {
         "http://localhost:3000/",
         "http://localhost:3000/products",
         "http://localhost:3000/products?q=mascara&category=beauty&sort=price-asc",
-        "http://localhost:3000/products/essence-mascara-lash-princess-1",
       ],
       numberOfRuns: 1,
       settings: {
