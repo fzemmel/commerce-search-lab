@@ -6,8 +6,7 @@ module.exports = {
       url: [
         "http://localhost:3000/",
         "http://localhost:3000/products",
-        "http://localhost:3000/products?q=shirt&category=apparel&sort=price-asc",
-        "http://localhost:3000/products/atlas-organic-cotton-tee",
+        "http://localhost:3000/products?q=mascara&category=beauty&sort=price-asc",
       ],
       numberOfRuns: 1,
       settings: {

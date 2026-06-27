@@ -1,4 +1,3 @@
-import { products } from "@/data/products";
 import type { Product, ProductCategory } from "@/types/product";
 
 export type ProductSort = "name-asc" | "price-asc" | "price-desc" | "rating-desc";
@@ -12,13 +11,6 @@ export type ProductQuery = {
 export type SearchParamValue = string | string[] | undefined;
 export type ProductSearchParams = Record<string, SearchParamValue>;
 
-export const categoryLabels: Record<ProductCategory, string> = {
-  apparel: "Apparel",
-  footwear: "Footwear",
-  accessories: "Accessories",
-  equipment: "Equipment",
-};
-
 export const sortLabels: Record<ProductSort, string> = {
   "name-asc": "Name A-Z",
   "price-asc": "Price ascending",
@@ -26,34 +18,44 @@ export const sortLabels: Record<ProductSort, string> = {
   "rating-desc": "Rating descending",
 };
 
-const categories = Object.keys(categoryLabels) as ProductCategory[];
 const sortValues = Object.keys(sortLabels) as ProductSort[];
 
 function firstParam(value: SearchParamValue) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-export function parseProductQuery(searchParams: ProductSearchParams): ProductQuery {
+export function formatCategoryLabel(category: ProductCategory) {
+  return category
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
+}
+
+export function parseProductQuery(searchParams: ProductSearchParams, validCategories?: ProductCategory[]): ProductQuery {
   const q = firstParam(searchParams.q)?.trim() ?? "";
   const category = firstParam(searchParams.category);
   const sort = firstParam(searchParams.sort);
+  const hasKnownCategory = category && (!validCategories || validCategories.includes(category));
 
   return {
     q,
-    category: category && categories.includes(category as ProductCategory) ? (category as ProductCategory) : "all",
+    category: hasKnownCategory ? category : "all",
     sort: sort && sortValues.includes(sort as ProductSort) ? (sort as ProductSort) : "name-asc",
   };
 }
 
-export function getCategoryOptions() {
-  return categories.map((value) => ({ value, label: categoryLabels[value] }));
+export function getCategoryOptions(catalog: Product[]) {
+  return [...new Set(catalog.map((product) => product.category))]
+    .toSorted((a, b) => formatCategoryLabel(a).localeCompare(formatCategoryLabel(b)))
+    .map((value) => ({ value, label: formatCategoryLabel(value) }));
 }
 
-export function getProductBySlug(slug: string) {
-  return products.find((product) => product.slug === slug);
+export function getProductBySlug(slug: string, catalog: Product[]) {
+  return catalog.find((product) => product.slug === slug);
 }
 
-export function queryProducts(query: ProductQuery, catalog: Product[] = products) {
+export function queryProducts(query: ProductQuery, catalog: Product[]) {
   const search = query.q.toLowerCase();
 
   return catalog

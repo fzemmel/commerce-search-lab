@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.4.0 - 2026-06-27
+
+### Added
+
+- DummyJSON product API integration with server-side ISR caching.
+- Local fallback catalog when the external product API is unavailable.
+- Dynamic category options based on the loaded product catalog.
+- Real product imagery via `next/image` with a remote image allow-list for DummyJSON assets.
+- Unit tests for API product mapping and fallback behavior.
+
 ## 0.3.0 - 2026-06-26
 
 ### Added
