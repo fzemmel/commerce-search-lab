@@ -8,7 +8,7 @@ updates:
       day: "monday"
       time: "08:00"
       timezone: "Europe/Berlin"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     groups:
       next:
         patterns:
@@ -41,7 +41,15 @@ updates:
       day: "monday"
       time: "08:15"
       timezone: "Europe/Berlin"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 1
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "docker"
     directory: "/"
@@ -50,4 +58,8 @@ updates:
       day: "monday"
       time: "08:30"
       timezone: "Europe/Berlin"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 1
+    ignore:
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
