@@ -3,6 +3,7 @@
 .next
 .lighthouseci
 lighthouse-reports
+storybook-static
 node_modules
 coverage
 build

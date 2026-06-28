@@ -35,6 +35,10 @@ export function ProductFilters({ query, categoryOptions }: ProductFiltersProps) 
         params.set(key, value);
       });
 
+      if (updates.q !== undefined || updates.category !== undefined || updates.sort !== undefined) {
+        params.delete("page");
+      }
+
       const queryString = params.toString();
       router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
     });

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.6.0 - 2026-06-28
+
+### Added
+
+- Server-rendered product listing pagination with URL-synchronized page state.
+- Accessible pagination navigation for product listing results.
+- Pagination-aware result summary for filtered catalogs.
+- Storybook coverage for the product pagination component.
+
 ## 0.5.0 - 2026-06-27
 
 ### Added
