@@ -102,19 +102,20 @@ export function queryProducts(query: ProductQuery, catalog: Product[]) {
 }
 
 export function paginateProducts(products: Product[], page: number, pageSize = PRODUCTS_PER_PAGE): PaginatedProducts {
-  const safePageSize = pageSize > 0 ? pageSize : PRODUCTS_PER_PAGE;
+  const normalizedPageSize = Number.isFinite(pageSize) && pageSize > 0 ? Math.floor(pageSize) : PRODUCTS_PER_PAGE;
+  const normalizedPage = Number.isFinite(page) ? Math.floor(page) : 1;
   const totalItems = products.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / safePageSize));
-  const safePage = Math.min(Math.max(page, 1), totalPages);
-  const startIndex = (safePage - 1) * safePageSize;
-  const items = products.slice(startIndex, startIndex + safePageSize);
+  const totalPages = Math.max(1, Math.ceil(totalItems / normalizedPageSize));
+  const safePage = Math.min(Math.max(normalizedPage, 1), totalPages);
+  const startIndex = (safePage - 1) * normalizedPageSize;
+  const items = products.slice(startIndex, startIndex + normalizedPageSize);
   const startItem = totalItems === 0 ? 0 : startIndex + 1;
   const endItem = totalItems === 0 ? 0 : startIndex + items.length;
 
   return {
     items,
     page: safePage,
-    pageSize: safePageSize,
+    pageSize: normalizedPageSize,
     totalItems,
     totalPages,
     startItem,
