@@ -1,0 +1,53 @@
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      next:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      storybook:
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+      tooling:
+        patterns:
+          - "eslint"
+          - "typescript"
+          - "vitest"
+          - "@lhci/cli"
+          - "@tailwindcss/postcss"
+          - "tailwindcss"
+          - "@types/node"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:15"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:30"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 3

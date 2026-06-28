@@ -11,6 +11,7 @@ Commerce Search Lab is a Next.js product discovery app. Use React and Next.js Ap
 - TypeScript
 - Tailwind CSS 4
 - ESLint
+- Storybook
 - DummyJSON product API with local fallback data
 - `src/` directory and `@/*` import alias
 
@@ -28,6 +29,7 @@ Commerce Search Lab is a Next.js product discovery app. Use React and Next.js Ap
 - URL-synchronized query state such as `/products?q=mascara&category=beauty&sort=price-asc`
 - Empty state for searches without matches
 - Loading, error, and not-found route structure
+- Isolated component stories for UI primitives and product components
 - Responsive Tailwind layout
 
 ## Architecture Decisions
@@ -38,6 +40,7 @@ Commerce Search Lab is a Next.js product discovery app. Use React and Next.js Ap
 - Reusable product UI is grouped under `src/components/product`.
 - Interactive listing controls are grouped under `src/components/filters`.
 - Generic primitives such as `Button`, `Badge`, `Input`, and `Select` are grouped under `src/components/ui`.
+- Storybook is used for local component review and static build validation, but is not deployed separately.
 - Global state libraries are intentionally avoided. The URL is the source of truth for listing state.
 
 ## Server Components vs. Client Components
@@ -82,6 +85,18 @@ Run unit tests:
 
 ```bash
 pnpm test
+```
+
+Start Storybook locally:
+
+```bash
+pnpm storybook
+```
+
+Build Storybook statically:
+
+```bash
+pnpm build-storybook
 ```
 
 Build the production app:
@@ -138,6 +153,7 @@ GitHub Actions runs quality checks for pushes and pull requests targeting `main`
 pnpm lint
 pnpm test
 pnpm build
+pnpm build-storybook
 pnpm lhci
 ```
 
@@ -156,6 +172,16 @@ Required GitHub repository secrets:
 - `SSH_PRIVATE_KEY`: Private SSH key for the deployment user.
 - `DEPLOY_PATH`: Server path for the app Compose file, for example `/opt/portfolio-lab/apps/commerce-search-lab`.
 - `GHCR_READ_TOKEN`: GitHub token with `read:packages` permission for pulling the private GHCR image.
+
+## Dependency Updates
+
+Dependabot is configured in `.github/dependabot.yml` to open weekly pull requests for:
+
+- pnpm dependencies from `package.json` and `pnpm-lock.yaml`.
+- GitHub Actions used by the CI and deployment workflow.
+- Docker base image updates for the production image.
+
+Dependency updates are grouped for Next.js, React, Storybook, and tooling packages to keep pull requests reviewable. Dependabot pull requests run the normal quality pipeline and are merged manually.
 
 ## Useful Routes
 

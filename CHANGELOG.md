@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.5.0 - 2026-06-27
+
+### Added
+
+- Dependabot configuration for pnpm dependencies, GitHub Actions, and Docker base image updates.
+- Storybook setup for local component development with Next.js and Tailwind CSS.
+- Initial stories for UI primitives and product components using local fixtures.
+- CI validation for static Storybook builds.
+
 ## 0.4.0 - 2026-06-27
 
 ### Added

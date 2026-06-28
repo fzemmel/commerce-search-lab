@@ -14,6 +14,7 @@
 /coverage
 /.lighthouseci
 /lighthouse-reports
+/storybook-static
 
 # next.js
 /.next/
