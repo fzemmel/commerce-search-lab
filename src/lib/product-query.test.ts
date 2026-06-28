@@ -4,6 +4,7 @@ import {
   formatCategoryLabel,
   getCategoryOptions,
   getProductBySlug,
+  paginateProducts,
   parseProductQuery,
   queryProducts,
   type ProductQuery,
@@ -53,6 +54,7 @@ const defaultQuery: ProductQuery = {
   q: "",
   category: "all",
   sort: "name-asc",
+  page: 1,
 };
 
 describe("parseProductQuery", () => {
@@ -65,6 +67,7 @@ describe("parseProductQuery", () => {
       q: "shirt",
       category: "apparel",
       sort: "price-asc",
+      page: 1,
     });
   });
 
@@ -76,11 +79,22 @@ describe("parseProductQuery", () => {
     expect(parseProductQuery({ category: "home-decoration" })).toEqual({ ...defaultQuery, category: "home-decoration" });
   });
 
+  it("parses positive page values", () => {
+    expect(parseProductQuery({ page: "3" })).toEqual({ ...defaultQuery, page: 3 });
+  });
+
+  it("falls back to the first page for invalid page values", () => {
+    expect(parseProductQuery({ page: "0" })).toEqual(defaultQuery);
+    expect(parseProductQuery({ page: "-2" })).toEqual(defaultQuery);
+    expect(parseProductQuery({ page: "invalid" })).toEqual(defaultQuery);
+  });
+
   it("uses the first value for repeated search params", () => {
-    expect(parseProductQuery({ q: ["shoe", "shirt"], category: ["footwear", "apparel"], sort: ["rating-desc"] }, ["footwear"])).toEqual({
+    expect(parseProductQuery({ q: ["shoe", "shirt"], category: ["footwear", "apparel"], sort: ["rating-desc"], page: ["2", "3"] }, ["footwear"])).toEqual({
       q: "shoe",
       category: "footwear",
       sort: "rating-desc",
+      page: 2,
     });
   });
 });
@@ -154,5 +168,44 @@ describe("formatCategoryLabel", () => {
   it("formats API category slugs as readable labels", () => {
     expect(formatCategoryLabel("home-decoration")).toBe("Home Decoration");
     expect(formatCategoryLabel("mens_shoes")).toBe("Mens Shoes");
+  });
+});
+
+describe("paginateProducts", () => {
+  it("returns the requested product slice with pagination metadata", () => {
+    expect(paginateProducts(catalog, 2, 2)).toEqual({
+      items: [catalog[2]],
+      page: 2,
+      pageSize: 2,
+      totalItems: 3,
+      totalPages: 2,
+      startItem: 3,
+      endItem: 3,
+    });
+  });
+
+  it("clamps page values to the available range", () => {
+    expect(paginateProducts(catalog, 0, 2).page).toBe(1);
+    expect(paginateProducts(catalog, 99, 2).page).toBe(2);
+  });
+
+  it("handles empty catalogs", () => {
+    expect(paginateProducts([], 3, 2)).toEqual({
+      items: [],
+      page: 1,
+      pageSize: 2,
+      totalItems: 0,
+      totalPages: 1,
+      startItem: 0,
+      endItem: 0,
+    });
+  });
+
+  it("does not mutate the source catalog", () => {
+    const originalOrder = catalog.map((product) => product.slug);
+
+    paginateProducts(catalog, 2, 2);
+
+    expect(catalog.map((product) => product.slug)).toEqual(originalOrder);
   });
 });

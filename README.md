@@ -26,7 +26,8 @@ Commerce Search Lab is a Next.js product discovery app. Use React and Next.js Ap
 - Search across product name, brand, and description
 - Dynamic category filter based on the loaded catalog
 - Sorting by name, price ascending, price descending, and rating descending
-- URL-synchronized query state such as `/products?q=mascara&category=beauty&sort=price-asc`
+- Server-rendered pagination with 24 products per page
+- URL-synchronized query state such as `/products?q=mascara&category=beauty&sort=price-asc&page=2`
 - Empty state for searches without matches
 - Loading, error, and not-found route structure
 - Isolated component stories for UI primitives and product components
@@ -36,7 +37,7 @@ Commerce Search Lab is a Next.js product discovery app. Use React and Next.js Ap
 
 - Product data is loaded from DummyJSON in `src/lib/products-api.ts` with ISR caching and a local fallback catalog in `src/data/products.ts`.
 - Product domain types live in `src/types/product.ts`.
-- Filtering, sorting, query parsing, dynamic category labels, and product lookup live in `src/lib/product-query.ts`.
+- Filtering, sorting, pagination, query parsing, dynamic category labels, and product lookup live in `src/lib/product-query.ts`.
 - Reusable product UI is grouped under `src/components/product`.
 - Interactive listing controls are grouped under `src/components/filters`.
 - Generic primitives such as `Button`, `Badge`, `Input`, and `Select` are grouped under `src/components/ui`.
@@ -187,12 +188,14 @@ Dependency updates are grouped for Next.js, React, Storybook, and tooling packag
 
 - `/`
 - `/products`
+- `/products?page=2`
 - `/products?q=mascara&category=beauty&sort=price-asc`
+- `/products?q=mascara&category=beauty&sort=price-asc&page=2`
 - `/products/essence-mascara-lash-princess-1`
 
 ## Possible Version 2 Improvements
 
-- Add pagination or infinite loading
+- Add infinite loading or cursor-based pagination
 - Add multi-select facets such as brand, color, material, and sale status
 - Add Playwright smoke tests for listing and detail routes
 - Add component tests for product cards and filter controls

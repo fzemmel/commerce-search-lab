@@ -11,6 +11,9 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "storybook-static/**",
+    "lighthouse-reports/**",
+    ".lighthouseci/**",
     "next-env.d.ts",
   ]),
 ]);

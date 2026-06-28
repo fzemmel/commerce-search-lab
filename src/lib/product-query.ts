@@ -2,10 +2,23 @@ import type { Product, ProductCategory } from "@/types/product";
 
 export type ProductSort = "name-asc" | "price-asc" | "price-desc" | "rating-desc";
 
+export const PRODUCTS_PER_PAGE = 24;
+
 export type ProductQuery = {
   q: string;
   category: ProductCategory | "all";
   sort: ProductSort;
+  page: number;
+};
+
+export type PaginatedProducts = {
+  items: Product[];
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  startItem: number;
+  endItem: number;
 };
 
 export type SearchParamValue = string | string[] | undefined;
@@ -22,6 +35,12 @@ const sortValues = Object.keys(sortLabels) as ProductSort[];
 
 function firstParam(value: SearchParamValue) {
   return Array.isArray(value) ? value[0] : value;
+}
+
+function parsePage(value: SearchParamValue) {
+  const page = Number.parseInt(firstParam(value) ?? "", 10);
+
+  return Number.isFinite(page) && page > 0 ? page : 1;
 }
 
 export function formatCategoryLabel(category: ProductCategory) {
@@ -42,6 +61,7 @@ export function parseProductQuery(searchParams: ProductSearchParams, validCatego
     q,
     category: hasKnownCategory ? category : "all",
     sort: sort && sortValues.includes(sort as ProductSort) ? (sort as ProductSort) : "name-asc",
+    page: parsePage(searchParams.page),
   };
 }
 
@@ -79,4 +99,24 @@ export function queryProducts(query: ProductQuery, catalog: Product[]) {
           return a.name.localeCompare(b.name);
       }
     });
+}
+
+export function paginateProducts(products: Product[], page: number, pageSize = PRODUCTS_PER_PAGE): PaginatedProducts {
+  const totalItems = products.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const safePage = Math.min(Math.max(page, 1), totalPages);
+  const startIndex = (safePage - 1) * pageSize;
+  const items = products.slice(startIndex, startIndex + pageSize);
+  const startItem = totalItems === 0 ? 0 : startIndex + 1;
+  const endItem = totalItems === 0 ? 0 : startIndex + items.length;
+
+  return {
+    items,
+    page: safePage,
+    pageSize,
+    totalItems,
+    totalPages,
+    startItem,
+    endItem,
+  };
 }
