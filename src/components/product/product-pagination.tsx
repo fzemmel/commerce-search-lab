@@ -40,7 +40,7 @@ function getPageItems(currentPage: number, totalPages: number): PageItem[] {
     return Array.from({ length: totalPages }, (_, index) => index + 1);
   }
 
-  const pages = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
+  const pages = new Set([1, totalPages, currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2]);
   const visiblePages = [...pages].filter((page) => page >= 1 && page <= totalPages).toSorted((a, b) => a - b);
   const items: PageItem[] = [];
 
