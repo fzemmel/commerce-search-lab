@@ -569,12 +569,10 @@ Do not add these features in Version 1 unless explicitly requested:
 
 * Authentication
 * Database integration
-* External product API
 * Payment or checkout flow
 * Full cart implementation
 * Global state library
 * Complex CMS integration
-* Storybook
 * End-to-end testing
 * Full design system
 * Internationalization
