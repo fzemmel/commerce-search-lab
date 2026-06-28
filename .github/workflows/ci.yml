@@ -61,6 +61,7 @@ jobs:
           name: lighthouse-reports
           path: lighthouse-reports
           if-no-files-found: warn
+          retention-days: 14
 
   deploy:
     name: Deploy to Hetzner
