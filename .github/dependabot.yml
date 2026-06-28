@@ -33,6 +33,10 @@ updates:
           - "@tailwindcss/postcss"
           - "tailwindcss"
           - "@types/node"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "github-actions"
     directory: "/"
